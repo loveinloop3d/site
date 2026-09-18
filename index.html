@@ -215,7 +215,8 @@
   }
   .featured-badge svg{ width:14px; height:14px; flex:none }
   .featured-frame:hover .featured-badge{ background:var(--gold); color:var(--navy) }
-  @media (max-width:480px){ .featured-badge{ bottom:12px; left:12px; font-size:12px; padding:6px 12px } }
+  .featured-badge{ max-width:calc(100% - 40px); text-align:left }
+  @media (max-width:480px){ .featured-badge{ bottom:10px; left:10px; max-width:calc(100% - 20px); font-size:11px; padding:6px 12px; border-radius:14px } }
 
   #portfolio{ padding-top:64px; padding-bottom:48px; border-top:1px solid var(--line) }
 
@@ -704,7 +705,7 @@
     <div class="wrap">
       <button class="featured-frame" type="button" data-work="alice" aria-label="Ver fotos e vídeo do cosplay Alice no País das Maravilhas">
         <video id="featured-video" src="portfolio/alice/video.mp4" poster="portfolio/alice/video-poster.webp" muted loop playsinline preload="metadata" aria-hidden="true"></video>
-        <span class="featured-badge"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>Cosplay · Alice no País das Maravilhas</span>
+        <span class="featured-badge"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>Cosplay · Alice no País das Maravilhas · @santa_rosa_entretenimento_</span>
       </button>
     </div>
   </section>
@@ -723,7 +724,7 @@
       <ul class="port-track">
         <li class="work" data-cat="cosplay">
           <div class="work-media"><img src="portfolio/alice/01-card.webp" alt="Cosplayer de Rainha de Copas, de peruca ruiva e vestido vermelho e dourado, segurando um cetro dourado com coração" width="720" height="900" loading="lazy" decoding="async"></div>
-          <div class="work-body"><span class="cat-tag cosplay">Cosplay</span><h3>Alice no País das Maravilhas</h3><p>Chapéu e cetro do cosplay, feitos em filamento de alta resistência e com pintura personalizada.</p><p class="work-credit">Cosplay: <a href="https://www.instagram.com/santa_rosa_entretenimento_/" target="_blank" rel="noopener">@santa_rosa_entretenimento_</a></p></div>
+          <div class="work-body"><span class="cat-tag cosplay">Cosplay</span><h3>Alice no País das Maravilhas</h3><p>Coroa e cetro da Rainha de Copas, feitos em filamento de alta resistência e com pintura personalizada.</p><p class="work-credit">Cosplay: <a href="https://www.instagram.com/santa_rosa_entretenimento_/" target="_blank" rel="noopener">@santa_rosa_entretenimento_</a></p></div>
           <button class="work-open" type="button" data-work="alice" aria-label="Ver fotos e vídeo: Alice no País das Maravilhas"></button>
         </li>
         <li class="work" data-cat="cosplay">
@@ -746,6 +747,11 @@
           <div class="work-body"><span class="cat-tag figures">Figures</span><h3>Pickle Rick</h3><p>Figure em resina com base temática, pintada à mão.</p></div>
           <button class="work-open" type="button" data-work="pickle-rick" aria-label="Ver foto e vídeos: Pickle Rick"></button>
         </li>
+        <li class="work" data-cat="figures">
+          <div class="work-media"><img src="portfolio/sonic/01-card.webp" alt="Figure de ouriço azul de tênis vermelhos segurando um anel dourado" width="720" height="900" loading="lazy" decoding="async"></div>
+          <div class="work-body"><span class="cat-tag figures">Figures</span><h3>Sonic</h3><p>Figure em resina multicor para o aniversário do pequeno Enzo.</p></div>
+          <button class="work-open" type="button" data-work="sonic" aria-label="Ver foto e vídeo: Sonic"></button>
+        </li>
         <li class="work" data-cat="sob-medida">
           <div class="work-media"><img src="portfolio/piquete-escobar/01-card.webp" alt="Busto de cavalo cor de bronze, de crina ondulada, sobre base preta" width="720" height="900" loading="lazy" decoding="async"></div>
           <div class="work-body"><span class="cat-tag presentes">Sob medida</span><h3>Piquete Escobar</h3><p>Busto de cavalo com modelagem exclusiva, impresso em resina e pintado à mão em bronze, para o piquete de Eldorado do Sul.</p></div>
@@ -760,6 +766,11 @@
           <div class="work-media"><img src="portfolio/porta-figurinhas-copa/01-card.webp" alt="Estojo dourado com tampa decorada em preto, segurado na mão" width="720" height="900" loading="lazy" decoding="async"></div>
           <div class="work-body"><span class="cat-tag presentes">Sob medida</span><h3>Porta-figurinhas da Copa</h3><p>Estojo com tampa e divisórias para guardar as figurinhas, em duas cores direto da impressora.</p></div>
           <button class="work-open" type="button" data-work="porta-figurinhas-copa" aria-label="Ver fotos: Porta-figurinhas da Copa"></button>
+        </li>
+        <li class="work" data-cat="sob-medida">
+          <div class="work-media"><img src="portfolio/freud/01-card.webp" alt="Três peões brancos de resina: um senhor de barba, um anjo e um diabinho" width="720" height="900" loading="lazy" decoding="async"></div>
+          <div class="work-body"><span class="cat-tag presentes">Sob medida</span><h3>Freud: Caminhos das Vidas</h3><p>Peões em resina crua, sem pintura, para a apresentação deste jogo de tabuleiro, criado por estudantes de Psicologia da Ulbra Canoas.</p></div>
+          <button class="work-open" type="button" data-work="freud" aria-label="Ver fotos e vídeos: Freud: Caminhos das Vidas"></button>
         </li>
       </ul>
     </div>
@@ -1115,6 +1126,10 @@ var PORTFOLIO = {
     ['video', 'video', 'Close da figure mostrando a pintura verde e o rosto'],
     ['video', 'impressao', 'Timelapse da impressão em resina, com a peça subindo presa aos suportes']
   ]},
+  'sonic': { dir: 'sonic', media: [
+    ['img', '01', 'Figure de ouriço azul de tênis vermelhos segurando um anel dourado'],
+    ['video', 'video', 'A figure vista de perto, de vários ângulos']
+  ]},
   'piquete-escobar': { dir: 'piquete-escobar', media: [
     ['img', '01', 'Busto de cavalo cor de bronze, de perfil'],
     ['video', 'video', 'Close do busto girando, mostrando a crina'],
@@ -1133,6 +1148,13 @@ var PORTFOLIO = {
     ['img', '02', 'Estojo aberto, com as divisórias pretas por dentro'],
     ['img', '03', 'Estojo visto de lado, mostrando as travas'],
     ['img', '04', 'Estojo aberto na mão']
+  ]},
+  'freud': { dir: 'freud', media: [
+    ['img', '01', 'Três peões brancos de resina: um senhor de barba, um anjo e um diabinho'],
+    ['video', 'modelagem', 'Modelo 3D do peão diabinho girando na tela, pronto para imprimir'],
+    ['video', 'video', 'Os peões impressos em resina sobre uma mesa preta'],
+    ['img', '02', 'Referência enviada pelos estudantes: os três peões desenhados em papel'],
+    ['img', '03', 'O tabuleiro do jogo em uso numa sala de aula']
   ]}
 };
 
