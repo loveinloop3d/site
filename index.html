@@ -238,28 +238,26 @@
   .cat-tag.presentes{ color:var(--verde); background:#E7EFEC }
   .cat-tag.figures{ color:var(--gold-ink); background:#F0E9D5 }
 
-  /* faixa que desliza em loop (usada pelos cards de pessoas no celular) */
-  @keyframes port-scroll{ from{ transform:translateX(0) } to{ transform:translateX(-50%) } }
-
-  /* ---------- portfólio: filtros + grade de peças ---------- */
-  /* ---------- portfólio: uma linha que desliza sozinha da direita para a esquerda ---------- */
+  /* ---------- portfólio: uma linha que desliza sozinha da direita para a esquerda ----------
+     A faixa é uma área de rolagem horizontal: o script (marquee) a avança devagar e pausa quando
+     a pessoa toca, arrasta, passa o mouse ou foca um card; o dedo move a faixa nos dois sentidos. */
   .port-marquee{
     --gap:24px; --card:290px;
-    overflow:hidden; padding-block:8px 48px;
+    overflow-x:auto; overflow-y:hidden; overscroll-behavior-x:contain; scrollbar-width:none;
+    padding-block:8px 48px;
     -webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
             mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
   }
+  .port-marquee::-webkit-scrollbar{ display:none }
   .port-track{
     display:flex; gap:var(--gap); width:max-content; list-style:none; margin:0;
-    padding:0 calc(var(--gap) / 2); animation:port-scroll 60s linear infinite;
+    padding:0 calc(var(--gap) / 2);
   }
   .port-track .work{ flex:none; width:var(--card) }
-  .port-marquee:hover .port-track, .port-marquee:focus-within .port-track{ animation-play-state:paused }
-  @media (max-width:700px){ .port-marquee{ --gap:16px; --card:230px; padding-bottom:40px } .port-track{ animation-duration:45s } }
+  @media (max-width:700px){ .port-marquee{ --gap:16px; --card:230px; padding-bottom:40px } }
   @media (prefers-reduced-motion:reduce){
-    .port-track{ animation:none }
     .port-track .work.is-clone{ display:none }
-    .port-marquee{ overflow-x:auto; -webkit-mask-image:none; mask-image:none; scroll-snap-type:x mandatory }
+    .port-marquee{ -webkit-mask-image:none; mask-image:none; scroll-snap-type:x mandatory }
     .port-track .work{ scroll-snap-align:start }
   }
 
@@ -534,24 +532,24 @@
   .person p{ margin-top:6px; font-size:14px; line-height:1.55; color:var(--navy-soft) }
   @media (max-width:700px){
     .team-marquee{
-      --gap:16px; --card:220px; margin-top:40px; overflow:hidden; padding-block:4px;
+      --gap:16px; --card:220px; margin-top:40px; padding-block:4px;
+      overflow-x:auto; overflow-y:hidden; overscroll-behavior-x:contain; scrollbar-width:none;
       -webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
               mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
     }
+    .team-marquee::-webkit-scrollbar{ display:none }
     .team{
       display:flex; gap:var(--gap); width:max-content; max-width:none; margin:0;
-      padding-inline:calc(var(--gap) / 2); animation:port-scroll 26s linear infinite;
+      padding-inline:calc(var(--gap) / 2);
     }
     .team .person, .team .person.is-clone{ display:block; flex:none; width:var(--card) }
-    .team-marquee:hover .team, .team-marquee:focus-within .team{ animation-play-state:paused }
     .person-body{ padding:14px 16px 18px }
     .person h3{ font-size:16px }
     .person p{ font-size:13px; margin-top:4px }
   }
   @media (max-width:700px) and (prefers-reduced-motion:reduce){
-    .team{ animation:none }
     .team .person.is-clone{ display:none }
-    .team-marquee{ overflow-x:auto; -webkit-mask-image:none; mask-image:none; scroll-snap-type:x mandatory }
+    .team-marquee{ -webkit-mask-image:none; mask-image:none; scroll-snap-type:x mandatory }
     .team .person{ scroll-snap-align:start }
   }
 
@@ -1193,12 +1191,75 @@ var PORTFOLIO = {
     track.appendChild(clone);
   });
 
+  var lb = document.getElementById('lb');
+
+  // Faixas em movimento (portfólio; equipe no celular). Andam devagar para dar tempo de ler,
+  // param enquanto a pessoa interage e só voltam alguns segundos depois. O dedo (ou o trackpad)
+  // move a faixa para os dois lados. A posição fica sempre numa janela do tamanho de uma volta
+  // (period), com folga nas duas pontas; ao sair dela, salta uma volta inteira, sem emenda
+  // visível porque a segunda metade é cópia da primeira.
+  function marquee(box, speed){           // speed em px por segundo
+    var items = box.firstElementChild.children;
+    var firstClone = box.querySelector('.is-clone');
+    if (!firstClone) return;
+    var RESUME = 3500;                    // ms parada depois do último toque ou rolagem
+    var period = 0, lo = 0, pos = 0, last = 0, lastSet = -1, idleUntil = 0;
+    var hover = false, touching = false, visible = true;
+
+    function measure(){
+      period = firstClone.offsetLeft - items[0].offsetLeft;
+      lo = Math.max(0, (period - box.clientWidth) / 2);   // início da janela: folga igual dos dois lados
+    }
+    function active(){ return period > box.clientWidth; }
+    function hold(){ idleUntil = performance.now() + RESUME; }
+    function keyboardFocus(){         // só o foco de teclado segura a faixa (o toque não deixa ela presa)
+      try { return !!box.querySelector(':focus-visible'); } catch (e) { return box.contains(document.activeElement); }
+    }
+
+    box.addEventListener('scroll', function(){
+      if (Math.abs(box.scrollLeft - lastSet) > 1) hold();   // rolagem que não veio do script
+      if (!active()) return;
+      if (box.scrollLeft < lo - 2) lastSet = box.scrollLeft += period;
+      else if (box.scrollLeft > lo + period + 2) lastSet = box.scrollLeft -= period;
+    }, { passive: true });
+    box.addEventListener('touchstart', function(){ touching = true; hold(); }, { passive: true });
+    ['touchend', 'touchcancel'].forEach(function(ev){
+      box.addEventListener(ev, function(){ touching = false; hold(); }, { passive: true });
+    });
+    box.addEventListener('mouseenter', function(){ hover = true; });
+    box.addEventListener('mouseleave', function(){ hover = false; });
+    window.addEventListener('resize', measure);
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function(es){ visible = es[0].isIntersecting; }).observe(box);
+    }
+
+    measure();
+    if (active()) lastSet = box.scrollLeft = period;  // mostra o 1º card (na cópia), já com folga para voltar
+    if (reduceMotion) return;               // sem movimento automático; a rolagem manual continua
+
+    function step(t){
+      var dt = last ? Math.min(t - last, 100) : 0; last = t;
+      var paused = hover || touching || t < idleUntil || !visible || !active() || lb.open || keyboardFocus();
+      if (paused || Math.abs(box.scrollLeft - Math.round(pos)) > 1) pos = box.scrollLeft;
+      if (!paused) {
+        pos += speed * dt / 1000;
+        if (pos >= lo + period) pos -= period;
+        box.scrollLeft = pos;
+        lastSet = box.scrollLeft;
+      }
+      requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  var narrow = window.matchMedia('(max-width:700px)').matches;
+  marquee(document.querySelector('.port-marquee'), narrow ? 20 : 30);
+  marquee(document.querySelector('.team-marquee'), 18);
+
   // Vídeo do destaque: toca sozinho, a menos que o sistema peça menos movimento
   var fv = document.getElementById('featured-video');
   if (!reduceMotion) { fv.autoplay = true; fv.play().catch(function(){}); }
 
   // Galeria
-  var lb = document.getElementById('lb');
   var stage = document.getElementById('lb-stage');
   var prev = document.getElementById('lb-prev'), next = document.getElementById('lb-next');
   var thumbs = document.getElementById('lb-thumbs');
