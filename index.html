@@ -83,7 +83,7 @@
   }
   .nav{ max-width:1120px; margin-inline:auto; padding-inline:32px; height:80px;
     display:flex; align-items:center; justify-content:space-between; gap:16px; }
-  .brand{ display:flex; align-items:center; gap:12px; text-decoration:none }
+  .brand{ display:flex; align-items:center; gap:12px; min-height:44px; text-decoration:none }
   .brand img{ height:40px; width:auto }
   .brand-name{ font-family:'Quicksand','Segoe UI',sans-serif; font-weight:700; font-size:20px; letter-spacing:-.005em; color:var(--navy); white-space:nowrap }
   .nav-links{ display:flex; gap:30px; list-style:none; margin:0; padding:0; font-size:15px; font-weight:600 }
@@ -155,7 +155,7 @@
     .brand{ gap:8px }
     .brand img{ height:32px }
     .brand-name{ font-size:16px }
-    .nav-cta{ padding:9px 14px; font-size:13px }
+    .nav-cta{ padding:9px 14px; font-size:13px; min-height:44px }
     .cta-long{ display:none }
     .cta-short{ display:inline }
     .mobile-menu ul{ padding-inline:20px }
@@ -167,7 +167,6 @@
     .brand img{ height:28px }
     .brand-name{ font-size:13px }
     .nav-cta{ padding:8px 12px; font-size:12px }
-    .nav-toggle{ width:40px; height:40px }
     .mobile-menu ul{ padding-inline:14px }
   }
 
@@ -244,7 +243,7 @@
   .port-marquee{
     --gap:24px; --card:290px;
     overflow-x:auto; overflow-y:hidden; overscroll-behavior-x:contain; scrollbar-width:none;
-    padding-block:8px 48px;
+    padding-block:8px 108px;           /* espaço da sombra dos cards e das setas (strip-nav sobe para dentro dele) */
     -webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
             mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
   }
@@ -254,12 +253,28 @@
     padding:0 calc(var(--gap) / 2);
   }
   .port-track .work{ flex:none; width:var(--card) }
-  @media (max-width:700px){ .port-marquee{ --gap:16px; --card:230px; padding-bottom:40px } }
+  @media (max-width:700px){ .port-marquee{ --gap:16px; --card:230px; padding-bottom:100px } }
   @media (prefers-reduced-motion:reduce){
     .port-track .work.is-clone{ display:none }
     .port-marquee{ -webkit-mask-image:none; mask-image:none; scroll-snap-type:x mandatory }
     .port-track .work{ scroll-snap-align:start }
   }
+
+  /* setas + dica abaixo das faixas: deixa claro que dá para mover para os dois lados */
+  .strip-nav{ display:flex; align-items:center; justify-content:center; gap:14px; margin-top:8px; padding-inline:16px }
+  .port-marquee + .strip-nav{ position:relative; margin-top:-76px }
+  .strip-btn{
+    width:44px; height:44px; flex:none; border-radius:50%; cursor:pointer; padding:0;
+    display:inline-flex; align-items:center; justify-content:center;
+    border:1px solid var(--line); background:var(--paper); color:var(--navy); box-shadow:var(--shadow);
+    transition:background .18s ease, color .18s ease, border-color .18s ease;
+  }
+  .strip-btn:hover{ background:var(--gold); border-color:var(--gold); color:var(--navy) }
+  .strip-btn svg{ width:20px; height:20px }
+  .strip-hint{ font-size:13px; font-weight:600; color:var(--navy-soft); text-align:center }
+  .hint-mouse{ display:none }
+  @media (hover:hover) and (pointer:fine){ .hint-touch{ display:none } .hint-mouse{ display:inline } }
+  .team-nav{ display:none }
 
   .work{
     position:relative; background:var(--paper); border:1px solid var(--line); border-radius:14px; overflow:hidden;
@@ -290,11 +305,11 @@
   .work-open:focus-visible{ outline-offset:-3px }
   @media (max-width:560px){
     .work-body{ padding:12px 14px 16px }
-    .work-body .cat-tag{ font-size:10px; padding:4px 8px; margin-bottom:8px }
+    .work-body .cat-tag{ font-size:11px; padding:4px 8px; margin-bottom:8px }
     .work-body h3{ font-size:15px }
     .work-body p{ font-size:13px }
     .work-body .work-credit{ font-size:12px }
-    .work-count{ top:8px; right:8px; font-size:10px; padding:4px 8px }
+    .work-count{ top:8px; right:8px; font-size:11px; padding:4px 8px }
   }
   @media (prefers-reduced-motion:reduce){ .work:hover .work-media img{ transform:none } }
 
@@ -404,7 +419,7 @@
   .service-tag{ margin-bottom:18px; padding:6px 14px }
   .service-col h3{ font-size:22px; margin-bottom:12px }
   .service-col p{ color:var(--navy-soft); font-size:15px; max-width:38ch; margin-inline:auto }
-  .service-note{ margin-top:36px; text-align:center; font-size:14px; color:var(--navy-soft) }
+  .service-note{ max-width:68ch; margin:36px auto 0; text-align:center; font-size:14px; color:var(--navy-soft) }
   .service-note strong{ color:var(--navy) }
 
   /* ---------- materiais & tecnologias (compacta: detalhes abrem sob demanda) ---------- */
@@ -417,8 +432,8 @@
   .tech-tag.fdm{ color:var(--navy); background:#E7E7EA }
   .tech-tag.resina{ color:var(--gold-ink); background:#F0E9D5 }
 
-  .tech-grid{ display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start }
-  @media (max-width:760px){ .tech-grid{ grid-template-columns:1fr; gap:16px } }
+  .tech-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px; align-items:start }
+  @media (max-width:920px){ .tech-grid{ grid-template-columns:1fr; gap:16px } }
   .tech-col{ border:1px solid var(--line); border-radius:16px; padding:26px 28px 8px; display:flex; flex-direction:column; gap:14px }
   @media (max-width:700px){ .tech-col{ padding:22px 20px 4px } }
   .tech-head{ display:flex; align-items:center; gap:14px }
@@ -496,6 +511,7 @@
     .use-row.use-head{ display:none }
   }
   .mat-note{ padding:14px 0 18px; border-top:1px solid var(--line); font-size:14px; color:var(--navy-soft) }
+  @media (min-width:921px){ .mat-note{ max-width:75ch } }
   .mat-note strong{ color:var(--navy) }
 
   /* ---------- quem somos: texto + pessoas ---------- */
@@ -538,6 +554,7 @@
               mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
     }
     .team-marquee::-webkit-scrollbar{ display:none }
+    .team-nav{ display:flex; margin-top:16px }
     .team{
       display:flex; gap:var(--gap); width:max-content; max-width:none; margin:0;
       padding-inline:calc(var(--gap) / 2);
@@ -565,8 +582,8 @@
   }
   .email-address{ font-size:15px; font-weight:600; color:#fff; letter-spacing:.01em; user-select:all; overflow-wrap:anywhere }
   .copy-btn{
-    display:inline-flex; align-items:center; gap:6px; flex:none; min-height:36px;
-    padding:8px 14px; border:none; border-radius:999px; cursor:pointer;
+    display:inline-flex; align-items:center; gap:6px; flex:none; min-height:44px;
+    padding:8px 16px; border:none; border-radius:999px; cursor:pointer;
     background:rgba(255,255,255,.1); color:var(--gold-soft);
     font-family:var(--font-body); font-size:13px; font-weight:700;
     transition:background .18s ease, color .18s ease;
@@ -771,6 +788,11 @@
           <button class="work-open" type="button" data-work="freud" aria-label="Ver fotos e vídeos: Freud: Caminhos da Mente"></button>
         </li>
       </ul>
+    </div>
+    <div class="strip-nav">
+      <button class="strip-btn" type="button" data-dir="-1" aria-label="Ver peças anteriores"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>
+      <span class="strip-hint"><span class="hint-touch">Deslize para os lados</span><span class="hint-mouse">Use as setas para ver mais</span></span>
+      <button class="strip-btn" type="button" data-dir="1" aria-label="Ver próximas peças"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
     </div>
   </section>
 
@@ -1002,6 +1024,11 @@
         </li>
       </ul>
     </div>
+    <div class="strip-nav team-nav">
+      <button class="strip-btn" type="button" data-dir="-1" aria-label="Ver pessoa anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>
+      <span class="strip-hint"><span class="hint-touch">Deslize para os lados</span><span class="hint-mouse">Use as setas para ver mais</span></span>
+      <button class="strip-btn" type="button" data-dir="1" aria-label="Ver próxima pessoa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
+    </div>
   </section>
 
   <section id="contato" class="contact">
@@ -1226,11 +1253,28 @@ var PORTFOLIO = {
     ['touchend', 'touchcancel'].forEach(function(ev){
       box.addEventListener(ev, function(){ touching = false; hold(); }, { passive: true });
     });
-    box.addEventListener('mouseenter', function(){ hover = true; });
-    box.addEventListener('mouseleave', function(){ hover = false; });
+    box.addEventListener('pointerenter', function(e){ hover = e.pointerType === 'mouse'; });
+    box.addEventListener('pointerleave', function(){ hover = false; });
     window.addEventListener('resize', measure);
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(function(es){ visible = es[0].isIntersecting; }).observe(box);
+    }
+
+    // Setas: andam um card por vez; se o destino sair da janela, salta uma volta antes (sem emenda)
+    var nav = box.nextElementSibling;
+    if (nav && nav.classList.contains('strip-nav')) {
+      nav.querySelectorAll('.strip-btn').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var dir = +btn.getAttribute('data-dir'), card = items[1].offsetLeft - items[0].offsetLeft;
+          hold();
+          if (active()) {
+            var target = box.scrollLeft + dir * card;
+            if (target < lo) lastSet = box.scrollLeft += period;
+            else if (target > lo + period) lastSet = box.scrollLeft -= period;
+          }
+          box.scrollBy({ left: dir * card, behavior: reduceMotion ? 'auto' : 'smooth' });
+        });
+      });
     }
 
     measure();
