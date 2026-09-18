@@ -200,23 +200,22 @@
   }
   .btn-ghost:hover{ background:rgba(14,18,40,.05) }
 
-  /* ---------- featured banner (full-bleed placeholder, right under hero) ---------- */
+  /* ---------- destaque: vídeo da peça principal, logo abaixo do hero ---------- */
   .featured{ padding-block:0 64px; background:var(--paper) }
   .featured-frame{
-    width:100%; aspect-ratio:21/9; border-radius:18px; overflow:hidden; position:relative;
-    background:
-      repeating-linear-gradient(0deg, var(--cream) 0px, var(--cream) 3px, #EFE9D6 3px, #EFE9D6 4px),
-      linear-gradient(150deg,#F3EEDF,var(--cream));
-    display:flex; align-items:center; justify-content:center;
+    display:block; width:100%; aspect-ratio:16/9; border-radius:18px; overflow:hidden; position:relative;
+    background:var(--navy); border:none; padding:0; cursor:pointer; box-shadow:var(--shadow);
   }
-  @media (max-width:700px){ .featured-frame{ aspect-ratio:16/10 } }
-  .featured-frame svg{ width:14%; opacity:.4 }
+  .featured-frame video{ width:100%; height:100%; object-fit:cover; display:block }
   .featured-badge{
-    position:absolute; bottom:20px; left:20px;
+    position:absolute; bottom:20px; left:20px; display:inline-flex; align-items:center; gap:8px;
     background:rgba(14,18,40,.85); color:var(--gold-soft);
-    font-size:12px; font-weight:600; letter-spacing:.04em;
-    padding:7px 14px; border-radius:999px;
+    font-family:var(--font-body); font-size:13px; font-weight:600; letter-spacing:.02em;
+    padding:8px 16px; border-radius:999px; transition:background .18s ease, color .18s ease;
   }
+  .featured-badge svg{ width:14px; height:14px; flex:none }
+  .featured-frame:hover .featured-badge{ background:var(--gold); color:var(--navy) }
+  @media (max-width:480px){ .featured-badge{ bottom:12px; left:12px; font-size:12px; padding:6px 12px } }
 
   #portfolio{ padding-top:64px; padding-bottom:48px; border-top:1px solid var(--line) }
 
@@ -236,8 +235,13 @@
   }
   .cat-tag.cosplay{ color:var(--terracota-ink); background:#F6E9E2 }
   .cat-tag.presentes{ color:var(--verde); background:#E7EFEC }
+  .cat-tag.figures{ color:var(--gold-ink); background:#F0E9D5 }
 
-  /* ---------- portfolio grid ---------- */
+  /* faixa que desliza em loop (usada pelos cards de pessoas no celular) */
+  @keyframes port-scroll{ from{ transform:translateX(0) } to{ transform:translateX(-50%) } }
+
+  /* ---------- portfólio: filtros + grade de peças ---------- */
+  /* ---------- portfólio: uma linha que desliza sozinha da direita para a esquerda ---------- */
   .port-marquee{
     --gap:24px; --card:290px;
     overflow:hidden; padding-block:8px 48px;
@@ -245,34 +249,102 @@
             mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
   }
   .port-track{
-    display:flex; gap:var(--gap); width:max-content; padding-inline:calc(var(--gap) / 2);
-    animation:port-scroll 45s linear infinite;
+    display:flex; gap:var(--gap); width:max-content; list-style:none; margin:0;
+    padding:0 calc(var(--gap) / 2); animation:port-scroll 60s linear infinite;
   }
-  .port-track .port-card{ flex:none; width:var(--card) }
+  .port-track .work{ flex:none; width:var(--card) }
   .port-marquee:hover .port-track, .port-marquee:focus-within .port-track{ animation-play-state:paused }
-  @keyframes port-scroll{ from{ transform:translateX(0) } to{ transform:translateX(-50%) } }
-  @media (max-width:700px){ .port-marquee{ --gap:16px; --card:240px } .port-track{ animation-duration:35s } }
+  @media (max-width:700px){ .port-marquee{ --gap:16px; --card:230px; padding-bottom:40px } .port-track{ animation-duration:45s } }
   @media (prefers-reduced-motion:reduce){
     .port-track{ animation:none }
+    .port-track .work.is-clone{ display:none }
     .port-marquee{ overflow-x:auto; -webkit-mask-image:none; mask-image:none; scroll-snap-type:x mandatory }
-    .port-track .port-card{ scroll-snap-align:start }
+    .port-track .work{ scroll-snap-align:start }
   }
-  .port-card{ background:var(--paper); border:1px solid var(--line); border-radius:14px; overflow:hidden; box-shadow:var(--shadow) }
-  .port-thumb{
-    aspect-ratio:4/3; display:flex; align-items:center; justify-content:center; position:relative;
-    background:
-      repeating-linear-gradient(0deg, var(--cream) 0px, var(--cream) 3px, #EFE9D6 3px, #EFE9D6 4px),
-      linear-gradient(160deg,#F3EEDF,var(--cream));
+
+  .work{
+    position:relative; background:var(--paper); border:1px solid var(--line); border-radius:14px; overflow:hidden;
+    box-shadow:var(--shadow); transition:transform .22s ease, box-shadow .22s ease;
   }
-  .port-thumb svg{ width:32%; opacity:.5 }
-  .port-badge{
-    position:absolute; top:10px; right:10px; background:rgba(14,18,40,.82); color:var(--gold-soft);
+  .work-media{ position:relative; aspect-ratio:4/5; background:var(--cream); overflow:hidden }
+  .work-media img{ width:100%; height:100%; object-fit:cover; transition:transform .5s ease }
+  .work:hover .work-media img{ transform:scale(1.04) }
+  .work-count{
+    position:absolute; top:10px; right:10px; display:inline-flex; align-items:center; gap:6px;
+    background:rgba(14,18,40,.82); color:var(--gold-soft);
     font-size:11px; font-weight:600; letter-spacing:.04em; padding:5px 10px; border-radius:999px;
   }
-  .port-body{ padding:18px 20px 22px }
-  .port-body .cat{ margin-bottom:10px }
-  .port-body h3{ font-size:17px; color:var(--navy) }
-  .port-body p{ margin-top:6px; font-size:14px; color:var(--navy-soft) }
+  .work-count svg{ width:11px; height:11px }
+  .work-body{ padding:18px 20px 22px }
+  .work-body .cat-tag{ margin-bottom:10px }
+  .work-body h3{ font-size:17px; color:var(--navy) }
+  .work-body p{ margin-top:6px; font-size:14px; color:var(--navy-soft) }
+  /* crédito fica acima do botão que cobre o card, para o link do perfil ser clicável */
+  .work-body .work-credit{ position:relative; z-index:2; margin-top:10px; font-size:13px; font-weight:600; color:var(--navy-soft) }
+  .work-credit a{ color:var(--gold-ink); text-decoration:none }
+  .work-credit a:hover{ text-decoration:underline }
+  .lb-caption .lb-credit{ margin-top:6px; font-size:13px; font-weight:600; color:#C7C8D6 }
+  .lb-credit a{ color:var(--gold-soft); text-decoration:none }
+  .lb-credit a:hover{ text-decoration:underline }
+  /* o botão cobre o card inteiro: um alvo só, lido como "ver fotos e vídeos de …" */
+  .work-open{ position:absolute; inset:0; z-index:1; width:100%; border:none; background:none; padding:0; cursor:pointer; border-radius:14px }
+  .work-open:focus-visible{ outline-offset:-3px }
+  @media (max-width:560px){
+    .work-body{ padding:12px 14px 16px }
+    .work-body .cat-tag{ font-size:10px; padding:4px 8px; margin-bottom:8px }
+    .work-body h3{ font-size:15px }
+    .work-body p{ font-size:13px }
+    .work-body .work-credit{ font-size:12px }
+    .work-count{ top:8px; right:8px; font-size:10px; padding:4px 8px }
+  }
+  @media (prefers-reduced-motion:reduce){ .work:hover .work-media img{ transform:none } }
+
+  /* ---------- galeria da peça (dialog nativo: Esc fecha e o foco fica dentro) ---------- */
+  .lb{
+    width:100%; height:100%; max-width:none; max-height:none; margin:0; padding:0; border:none;
+    background:#080A18; color:#fff;
+  }
+  .lb::backdrop{ background:rgba(8,10,24,.7) }
+  .lb[open]{ display:grid; grid-template-rows:auto minmax(0,1fr) auto }
+  .lb-top{ display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px 20px }
+  .lb-counter{ font-size:13px; font-weight:600; color:#8B8DA0; letter-spacing:.04em }
+  .lb-btn{
+    width:48px; height:48px; flex:none; border-radius:50%; cursor:pointer; padding:0;
+    display:inline-flex; align-items:center; justify-content:center;
+    border:1px solid var(--line-on-dark); background:rgba(255,255,255,.06); color:#fff;
+    transition:background .18s ease, color .18s ease, border-color .18s ease;
+  }
+  .lb-btn:hover{ background:var(--gold); border-color:var(--gold); color:var(--navy) }
+  .lb-btn[hidden]{ display:none }
+  .lb-btn svg{ width:22px; height:22px }
+  .lb-stage{ position:relative; display:flex; align-items:center; justify-content:center; padding:0 84px; min-height:0 }
+  .lb-stage img, .lb-stage video{ max-width:100%; max-height:100%; object-fit:contain; border-radius:8px; background:#000 }
+  .lb-prev, .lb-next{ position:absolute; top:50%; transform:translateY(-50%) }
+  .lb-prev{ left:20px } .lb-next{ right:20px }
+  .lb-caption{ padding:18px 20px 24px; text-align:center; max-width:720px; width:100%; margin-inline:auto }
+  .lb-caption .cat-tag{ margin-bottom:8px }
+  .lb-caption h3{ font-size:20px; color:#fff }
+  .lb-caption p{ margin-top:4px; font-size:14px; color:#C7C8D6 }
+  .lb-thumbs{ display:flex; justify-content:center; gap:8px; margin-top:14px; flex-wrap:wrap }
+  .lb-thumb{
+    width:52px; height:52px; padding:0; border-radius:8px; overflow:hidden; cursor:pointer; position:relative;
+    border:2px solid transparent; background:#000; opacity:.55; transition:opacity .18s ease, border-color .18s ease;
+  }
+  .lb-thumb img{ width:100%; height:100%; object-fit:cover }
+  .lb-thumb:hover{ opacity:.9 }
+  .lb-thumb[aria-current="true"]{ border-color:var(--gold); opacity:1 }
+  .lb-thumb .play{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#fff; background:rgba(0,0,0,.3) }
+  .lb-thumb .play svg{ width:16px; height:16px }
+  @media (max-width:700px){
+    .lb-top{ padding:10px 12px }
+    .lb-stage{ padding:0 8px }
+    .lb-prev, .lb-next{ top:auto; bottom:10px; transform:none; width:44px; height:44px; background:rgba(8,10,24,.75) }
+    .lb-prev{ left:14px } .lb-next{ right:14px }
+    .lb-caption{ padding:12px 16px 18px }
+    .lb-caption h3{ font-size:17px }
+    .lb-caption p{ font-size:13px }
+    .lb-thumb{ width:40px; height:40px }
+  }
 
   /* ---------- processo: full-bleed navy + floating card ---------- */
   .process-section{ background:var(--navy); color:#fff }
@@ -630,10 +702,10 @@
 
   <section class="featured">
     <div class="wrap">
-      <div class="featured-frame">
-        <span class="featured-badge">foto em breve — peça em destaque</span>
-        <svg viewBox="0 0 64 64" fill="none" stroke="#63511A" stroke-width="1.6"><path d="M32 4l24 13v30L32 60 8 47V17z"/><path d="M8 17l24 13 24-13M32 30v30"/></svg>
-      </div>
+      <button class="featured-frame" type="button" data-work="alice" aria-label="Ver fotos e vídeo do cosplay Alice no País das Maravilhas">
+        <video id="featured-video" src="portfolio/alice/video.mp4" poster="portfolio/alice/video-poster.webp" muted loop playsinline preload="metadata" aria-hidden="true"></video>
+        <span class="featured-badge"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>Cosplay · Alice no País das Maravilhas</span>
+      </button>
     </div>
   </section>
 
@@ -642,62 +714,74 @@
       <div class="section-head">
         <span class="eyebrow">Portfólio</span>
         <h2>Peças que já ganharam forma</h2>
-        <p>Todo pedido começa com uma referência sua — aqui estão exemplos do tipo de trabalho que já entregamos.</p>
+        <p>Todo pedido começa com uma referência sua. Aqui estão algumas peças que já saíram do ateliê: toque numa delas para ver as fotos e os vídeos.</p>
       </div>
     </div>
+    <!-- Cada peça: card aqui + entrada em PORTFOLIO (script no fim da página) com as fotos e vídeos de portfolio/<pasta>/.
+         O script duplica os cards (is-clone) para a faixa girar sem emenda. -->
     <div class="port-marquee">
-      <div class="port-track">
-        <article class="port-card">
-          <div class="port-thumb"><span class="port-badge">foto em breve</span>
-            <svg viewBox="0 0 64 64" fill="none" stroke="#63511A" stroke-width="2"><path d="M32 6l22 12v28L32 58 10 46V18z"/><path d="M10 18l22 12 22-12M32 30v28"/></svg>
-          </div>
-          <div class="port-body"><span class="cat cat-tag cosplay">Cosplay</span><h3>Acessório de cosplay</h3><p>Adereço sob referência, resina + pintura em camadas</p></div>
-        </article>
-        <article class="port-card">
-          <div class="port-thumb"><span class="port-badge">foto em breve</span>
-            <svg viewBox="0 0 64 64" fill="none" stroke="#3E6B5C" stroke-width="2"><rect x="14" y="10" width="36" height="44" rx="2"/><path d="M14 40l10-10 8 8 10-14 12 16"/></svg>
-          </div>
-          <div class="port-body"><span class="cat cat-tag presentes">Presentes</span><h3>Luminária litofania</h3><p>Foto da família revelada pela luz, base em filamento</p></div>
-        </article>
-        <article class="port-card">
-          <div class="port-thumb"><span class="port-badge">foto em breve</span>
-            <svg viewBox="0 0 64 64" fill="none" stroke="#63511A" stroke-width="2"><path d="M32 8 12 16v14c0 13 9 22 20 26 11-4 20-13 20-26V16z"/><path d="M32 8v48"/></svg>
-          </div>
-          <div class="port-body"><span class="cat cat-tag cosplay">Cosplay</span><h3>Peça de armadura</h3><p>Ombreira e braçadeira sob referência, leves pra usar o evento inteiro</p></div>
-        </article>
-        <article class="port-card">
-          <div class="port-thumb"><span class="port-badge">foto em breve</span>
-            <svg viewBox="0 0 64 64" fill="none" stroke="#3E6B5C" stroke-width="2"><path d="M10 46h44M18 46V22l14-10 14 10v24"/></svg>
-          </div>
-          <div class="port-body"><span class="cat cat-tag presentes">Presentes</span><h3>Presente personalizado</h3><p>Nome, data ou símbolo — pensado pra uma pessoa só</p></div>
-        </article>
-        <article class="port-card" aria-hidden="true">
-          <div class="port-thumb"><span class="port-badge">foto em breve</span>
-            <svg viewBox="0 0 64 64" fill="none" stroke="#63511A" stroke-width="2"><path d="M32 6l22 12v28L32 58 10 46V18z"/><path d="M10 18l22 12 22-12M32 30v28"/></svg>
-          </div>
-          <div class="port-body"><span class="cat cat-tag cosplay">Cosplay</span><h3>Acessório de cosplay</h3><p>Adereço sob referência, resina + pintura em camadas</p></div>
-        </article>
-        <article class="port-card" aria-hidden="true">
-          <div class="port-thumb"><span class="port-badge">foto em breve</span>
-            <svg viewBox="0 0 64 64" fill="none" stroke="#3E6B5C" stroke-width="2"><rect x="14" y="10" width="36" height="44" rx="2"/><path d="M14 40l10-10 8 8 10-14 12 16"/></svg>
-          </div>
-          <div class="port-body"><span class="cat cat-tag presentes">Presentes</span><h3>Luminária litofania</h3><p>Foto da família revelada pela luz, base em filamento</p></div>
-        </article>
-        <article class="port-card" aria-hidden="true">
-          <div class="port-thumb"><span class="port-badge">foto em breve</span>
-            <svg viewBox="0 0 64 64" fill="none" stroke="#63511A" stroke-width="2"><path d="M32 8 12 16v14c0 13 9 22 20 26 11-4 20-13 20-26V16z"/><path d="M32 8v48"/></svg>
-          </div>
-          <div class="port-body"><span class="cat cat-tag cosplay">Cosplay</span><h3>Peça de armadura</h3><p>Ombreira e braçadeira sob referência, leves pra usar o evento inteiro</p></div>
-        </article>
-        <article class="port-card" aria-hidden="true">
-          <div class="port-thumb"><span class="port-badge">foto em breve</span>
-            <svg viewBox="0 0 64 64" fill="none" stroke="#3E6B5C" stroke-width="2"><path d="M10 46h44M18 46V22l14-10 14 10v24"/></svg>
-          </div>
-          <div class="port-body"><span class="cat cat-tag presentes">Presentes</span><h3>Presente personalizado</h3><p>Nome, data ou símbolo — pensado pra uma pessoa só</p></div>
-        </article>
-      </div>
+      <ul class="port-track">
+        <li class="work" data-cat="cosplay">
+          <div class="work-media"><img src="portfolio/alice/01-card.webp" alt="Cosplayer de Rainha de Copas, de peruca ruiva e vestido vermelho e dourado, segurando um cetro dourado com coração" width="720" height="900" loading="lazy" decoding="async"></div>
+          <div class="work-body"><span class="cat-tag cosplay">Cosplay</span><h3>Alice no País das Maravilhas</h3><p>Chapéu e cetro do cosplay, feitos em filamento de alta resistência e com pintura personalizada.</p><p class="work-credit">Cosplay: <a href="https://www.instagram.com/santa_rosa_entretenimento_/" target="_blank" rel="noopener">@santa_rosa_entretenimento_</a></p></div>
+          <button class="work-open" type="button" data-work="alice" aria-label="Ver fotos e vídeo: Alice no País das Maravilhas"></button>
+        </li>
+        <li class="work" data-cat="cosplay">
+          <div class="work-media"><img src="portfolio/widow-wood/01-card.webp" alt="Cosplayer de faroeste de chapéu branco, capa verde, colete bege com estrela de xerife e cinturão de couro com o prop no coldre" width="720" height="900" loading="lazy" decoding="async"></div>
+          <div class="work-body"><span class="cat-tag cosplay">Cosplay</span><h3>Widow Wood</h3><p>Prop do figurino modelado do zero, impresso em filamento e pintado à mão em prata e dourado.</p><p class="work-credit">Pedido do <a href="https://www.instagram.com/emporiocoicedemula/" target="_blank" rel="noopener">@emporiocoicedemula</a> para uma cliente</p></div>
+          <button class="work-open" type="button" data-work="widow-wood" aria-label="Ver foto: Widow Wood"></button>
+        </li>
+        <li class="work" data-cat="cosplay">
+          <div class="work-media"><img src="portfolio/mjolnir/01-card.webp" alt="Cabeça de martelo cenográfico cinza metálico com ornamentos entrelaçados em relevo" width="720" height="900" loading="lazy" decoding="async"></div>
+          <div class="work-body"><span class="cat-tag cosplay">Cosplay</span><h3>Mjölnir</h3><p>Prop com cabo em relevo, acabamento metálico envelhecido e base de pedra com placa gravada.</p></div>
+          <button class="work-open" type="button" data-work="mjolnir" aria-label="Ver fotos: Mjölnir"></button>
+        </li>
+        <li class="work" data-cat="figures">
+          <div class="work-media"><img src="portfolio/rick-e-morty/01-card.webp" alt="Diorama de dois personagens de desenho saindo de um portal verde, sobre base redonda" width="720" height="900" loading="lazy" decoding="async"></div>
+          <div class="work-body"><span class="cat-tag figures">Figures</span><h3>Rick e Morty</h3><p>Diorama em resina com o portal em volta dos personagens, pintado à mão.</p></div>
+          <button class="work-open" type="button" data-work="rick-e-morty" aria-label="Ver fotos e vídeos: Rick e Morty"></button>
+        </li>
+        <li class="work" data-cat="figures">
+          <div class="work-media"><img src="portfolio/pickle-rick/01-card.webp" alt="Figure de um picles verde com braços e pernas mecânicos, sobre base preta" width="720" height="900" loading="lazy" decoding="async"></div>
+          <div class="work-body"><span class="cat-tag figures">Figures</span><h3>Pickle Rick</h3><p>Figure em resina com base temática, pintada à mão.</p></div>
+          <button class="work-open" type="button" data-work="pickle-rick" aria-label="Ver foto e vídeos: Pickle Rick"></button>
+        </li>
+        <li class="work" data-cat="sob-medida">
+          <div class="work-media"><img src="portfolio/piquete-escobar/01-card.webp" alt="Busto de cavalo cor de bronze, de crina ondulada, sobre base preta" width="720" height="900" loading="lazy" decoding="async"></div>
+          <div class="work-body"><span class="cat-tag presentes">Sob medida</span><h3>Piquete Escobar</h3><p>Busto de cavalo com modelagem exclusiva, impresso em resina e pintado à mão em bronze, para o piquete de Eldorado do Sul.</p></div>
+          <button class="work-open" type="button" data-work="piquete-escobar" aria-label="Ver fotos e vídeo: Piquete Escobar"></button>
+        </li>
+        <li class="work" data-cat="sob-medida">
+          <div class="work-media"><img src="portfolio/taca-copa/01-card.webp" alt="Taça dourada com base verde segurada na mão" width="720" height="900" loading="lazy" decoding="async"></div>
+          <div class="work-body"><span class="cat-tag presentes">Sob medida</span><h3>Taça da Copa</h3><p>Troféu em filamento dourado e verde, com as cores direto da impressora.</p></div>
+          <button class="work-open" type="button" data-work="taca-copa" aria-label="Ver fotos e vídeo: Taça da Copa"></button>
+        </li>
+        <li class="work" data-cat="sob-medida">
+          <div class="work-media"><img src="portfolio/porta-figurinhas-copa/01-card.webp" alt="Estojo dourado com tampa decorada em preto, segurado na mão" width="720" height="900" loading="lazy" decoding="async"></div>
+          <div class="work-body"><span class="cat-tag presentes">Sob medida</span><h3>Porta-figurinhas da Copa</h3><p>Estojo com tampa e divisórias para guardar as figurinhas, em duas cores direto da impressora.</p></div>
+          <button class="work-open" type="button" data-work="porta-figurinhas-copa" aria-label="Ver fotos: Porta-figurinhas da Copa"></button>
+        </li>
+      </ul>
     </div>
   </section>
+
+  <dialog class="lb" id="lb" aria-labelledby="lb-title">
+    <div class="lb-top">
+      <span class="lb-counter" id="lb-counter"></span>
+      <button class="lb-btn" type="button" id="lb-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div class="lb-stage" id="lb-stage">
+      <button class="lb-btn lb-prev" type="button" id="lb-prev" aria-label="Anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>
+      <button class="lb-btn lb-next" type="button" id="lb-next" aria-label="Próxima"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
+    </div>
+    <div class="lb-caption">
+      <span class="cat-tag" id="lb-tag"></span>
+      <h3 id="lb-title"></h3>
+      <p id="lb-desc"></p>
+      <p class="lb-credit" id="lb-credit" hidden></p>
+      <div class="lb-thumbs" id="lb-thumbs"></div>
+    </div>
+  </dialog>
 
   <section id="processo" class="process-section">
     <div class="wrap">
@@ -999,6 +1083,187 @@
     if (navigator.clipboard && window.isSecureContext) {
       navigator.clipboard.writeText(text).then(function(){ done(true); }, function(){ fallback(text); });
     } else { fallback(text); }
+  });
+})();
+</script>
+<script>
+// Portfólio: fotos e vídeos de cada peça, na ordem em que aparecem na galeria.
+// Arquivos em portfolio/<pasta>/: NN.webp (foto), NN-card.webp (capa do card), <nome>.mp4 + <nome>-poster.webp (vídeo).
+var PORTFOLIO = {
+  'alice': { dir: 'alice', media: [
+    ['img', '01', 'Cosplayer de Rainha de Copas segurando um cetro dourado com coração'],
+    ['video', 'video', 'Rainha de Copas e Chapeleiro Maluco num banco de jardim, com cartas de baralho voando'],
+    ['img', '02', 'Chapeleiro Maluco e Rainha de Copas lado a lado num evento'],
+    ['img', '03', 'Rainha de Copas e Chapeleiro Maluco ao lado de um coelho de folhagem']
+  ]},
+  'widow-wood': { dir: 'widow-wood', media: [
+    ['img', '01', 'Cosplayer de faroeste de chapéu branco, capa verde, colete bege com estrela de xerife e cinturão de couro com o prop no coldre']
+  ]},
+  'mjolnir': { dir: 'mjolnir', media: [
+    ['img', '01', 'Cabeça do martelo em cinza metálico com ornamentos entrelaçados em relevo'],
+    ['img', '02', 'Cabo do martelo envolto em tiras em relevo, preso à cabeça metálica'],
+    ['img', '03', 'Base de pedra com placa escrita Mjölnir em letras góticas douradas']
+  ]},
+  'rick-e-morty': { dir: 'rick-e-morty', media: [
+    ['img', '01', 'Diorama com dois personagens saindo de um portal verde'],
+    ['video', 'video', 'O diorama girando, visto de vários ângulos'],
+    ['img', '02', 'Detalhe dos personagens e do portal verde'],
+    ['video', 'impressao', 'Timelapse da impressão em resina, com a peça subindo presa aos suportes']
+  ]},
+  'pickle-rick': { dir: 'pickle-rick', media: [
+    ['img', '01', 'Figure de um picles verde com braços e pernas mecânicos, sobre base preta'],
+    ['video', 'video', 'Close da figure mostrando a pintura verde e o rosto'],
+    ['video', 'impressao', 'Timelapse da impressão em resina, com a peça subindo presa aos suportes']
+  ]},
+  'piquete-escobar': { dir: 'piquete-escobar', media: [
+    ['img', '01', 'Busto de cavalo cor de bronze, de perfil'],
+    ['video', 'video', 'Close do busto girando, mostrando a crina'],
+    ['img', '02', 'Busto de cavalo, de frente, com o nome Piquete Escobar na base'],
+    ['img', '03', 'Busto de cavalo em outro ângulo'],
+    ['img', '04', 'Detalhe da crina ondulada'],
+    ['img', '05', 'Busto de cavalo visto de lado'],
+    ['img', '06', 'Busto de cavalo sobre a base preta']
+  ]},
+  'taca-copa': { dir: 'taca-copa', media: [
+    ['img', '01', 'Taça dourada com base verde segurada na mão'],
+    ['video', 'video', 'A taça girando na mão']
+  ]},
+  'porta-figurinhas-copa': { dir: 'porta-figurinhas-copa', media: [
+    ['img', '01', 'Estojo dourado fechado, com a tampa decorada em preto'],
+    ['img', '02', 'Estojo aberto, com as divisórias pretas por dentro'],
+    ['img', '03', 'Estojo visto de lado, mostrando as travas'],
+    ['img', '04', 'Estojo aberto na mão']
+  ]}
+};
+
+(function(){
+  var ICON_PLAY = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
+  var ICON_PHOTO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 16 5-5 5 5 3-3 5 5"/></svg>';
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function src(work, m){ return 'portfolio/' + work.dir + '/' + m[1] + (m[0] === 'img' ? '.webp' : '.mp4'); }
+  function thumb(work, m){ return 'portfolio/' + work.dir + '/' + m[1] + (m[0] === 'img' ? '-card.webp' : '-poster.webp'); }
+  function countLabel(work){
+    var f = 0, v = 0;
+    work.media.forEach(function(m){ if (m[0] === 'img') f++; else v++; });
+    var parts = [f + (f === 1 ? ' foto' : ' fotos')];
+    if (v) parts.push(v + (v === 1 ? ' vídeo' : ' vídeos'));
+    return { text: parts.join(' · '), video: v > 0 };
+  }
+
+  // Selo "3 fotos · 1 vídeo" no canto de cada card
+  document.querySelectorAll('.work').forEach(function(card){
+    var work = PORTFOLIO[card.querySelector('.work-open').getAttribute('data-work')];
+    var c = countLabel(work);
+    var badge = document.createElement('span');
+    badge.className = 'work-count';
+    badge.innerHTML = (c.video ? ICON_PLAY : ICON_PHOTO) + c.text;
+    card.querySelector('.work-media').appendChild(badge);
+  });
+
+  // Faixa: duplica os cards para o loop não ter emenda (a cópia não é lida nem recebe foco)
+  var track = document.querySelector('.port-track');
+  Array.prototype.slice.call(track.children).forEach(function(card){
+    var clone = card.cloneNode(true);
+    clone.classList.add('is-clone');
+    clone.setAttribute('aria-hidden', 'true');
+    clone.querySelectorAll('.work-open, a').forEach(function(el){ el.tabIndex = -1; });
+    track.appendChild(clone);
+  });
+
+  // Vídeo do destaque: toca sozinho, a menos que o sistema peça menos movimento
+  var fv = document.getElementById('featured-video');
+  if (!reduceMotion) { fv.autoplay = true; fv.play().catch(function(){}); }
+
+  // Galeria
+  var lb = document.getElementById('lb');
+  var stage = document.getElementById('lb-stage');
+  var prev = document.getElementById('lb-prev'), next = document.getElementById('lb-next');
+  var thumbs = document.getElementById('lb-thumbs');
+  var counter = document.getElementById('lb-counter');
+  var current = null, index = 0, opener = null;
+
+  function show(i){
+    var work = current.work, n = work.media.length;
+    index = (i + n) % n;
+    var m = work.media[index];
+    var old = stage.querySelector('img, video');
+    if (old) old.remove();
+    var el;
+    if (m[0] === 'img') {
+      el = document.createElement('img');
+      el.alt = m[2];
+    } else {
+      el = document.createElement('video');
+      el.poster = thumb(work, m);
+      el.muted = true; el.loop = true; el.playsInline = true; el.controls = true;
+      el.setAttribute('aria-label', m[2]);
+      if (!reduceMotion) el.autoplay = true;
+    }
+    el.src = src(work, m);
+    stage.insertBefore(el, prev);
+    counter.textContent = n > 1 ? (index + 1) + ' / ' + n : '';
+    prev.hidden = next.hidden = n < 2;
+    thumbs.querySelectorAll('.lb-thumb').forEach(function(t, k){
+      if (k === index) t.setAttribute('aria-current', 'true'); else t.removeAttribute('aria-current');
+    });
+  }
+
+  function open(key, from){
+    var card = document.querySelector('.work:not(.is-clone) .work-open[data-work="' + key + '"]').closest('.work');
+    current = { work: PORTFOLIO[key], card: card };
+    opener = from;
+    var tag = card.querySelector('.cat-tag');
+    var lbTag = document.getElementById('lb-tag');
+    lbTag.className = tag.className; lbTag.textContent = tag.textContent;
+    document.getElementById('lb-title').textContent = card.querySelector('h3').textContent;
+    document.getElementById('lb-desc').textContent = card.querySelector('.work-body p').textContent;
+    var credit = card.querySelector('.work-credit'), lbCredit = document.getElementById('lb-credit');
+    lbCredit.innerHTML = credit ? credit.innerHTML : '';
+    lbCredit.hidden = !credit;
+    thumbs.innerHTML = '';
+    if (current.work.media.length > 1) {
+      current.work.media.forEach(function(m, k){
+        var t = document.createElement('button');
+        t.type = 'button'; t.className = 'lb-thumb';
+        t.setAttribute('aria-label', (m[0] === 'img' ? 'Foto ' : 'Vídeo ') + (k + 1) + ': ' + m[2]);
+        t.innerHTML = '<img src="' + thumb(current.work, m) + '" alt="">' + (m[0] === 'video' ? '<span class="play">' + ICON_PLAY + '</span>' : '');
+        t.addEventListener('click', function(){ show(k); });
+        thumbs.appendChild(t);
+      });
+    }
+    if (fv) fv.pause();
+    lb.showModal();
+    document.body.style.overflow = 'hidden';
+    show(0);
+    document.getElementById('lb-close').focus();
+  }
+
+  lb.addEventListener('close', function(){
+    var v = stage.querySelector('video'); if (v) v.pause();
+    stage.querySelector('img, video') && stage.querySelector('img, video').remove();
+    document.body.style.overflow = '';
+    if (fv && !reduceMotion) fv.play().catch(function(){});
+    if (opener) opener.focus();
+  });
+  document.getElementById('lb-close').addEventListener('click', function(){ lb.close(); });
+  prev.addEventListener('click', function(){ show(index - 1); });
+  next.addEventListener('click', function(){ show(index + 1); });
+  lb.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowLeft') { show(index - 1); e.preventDefault(); }
+    if (e.key === 'ArrowRight') { show(index + 1); e.preventDefault(); }
+  });
+  // Deslizar para o lado no celular
+  var x0 = null;
+  stage.addEventListener('touchstart', function(e){ x0 = e.touches[0].clientX; }, { passive: true });
+  stage.addEventListener('touchend', function(e){
+    if (x0 === null) return;
+    var dx = e.changedTouches[0].clientX - x0; x0 = null;
+    if (Math.abs(dx) > 50 && current.work.media.length > 1) show(index + (dx < 0 ? 1 : -1));
+  });
+
+  document.querySelectorAll('[data-work]').forEach(function(btn){
+    btn.addEventListener('click', function(){ open(btn.getAttribute('data-work'), btn); });
   });
 })();
 </script>
